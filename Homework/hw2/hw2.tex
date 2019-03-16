@@ -1,0 +1,312 @@
+\documentclass{article}
+
+\usepackage{mathtools}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
+\usepackage{subcaption}
+\usepackage{gensymb}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,epsfig,epstopdf,titling,url,array}
+\usepackage{enumerate}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\newcommand{\mathbbm}[1]{\text{\usefont{U}{bbm}{m}{n}#1}}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem*{thmt*}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{assumption}{Assumption}
+\newtheorem{prop}[thm]{Proposition}
+\pgfplotsset{compat=1.15}
+
+\newtheorem{defn}{Definition}[section]
+\title{Homework 2 -- Xavier Gitiaux}
+\author{}
+\date{March 2019}
+
+\begin{document}
+\maketitle
+
+\section{Exercise 1}
+\paragraph{Joint Distribution}
+Denote $C$ for coherence, $D$ for difficulty, $I$ for intelligent, $G$ for grade, $S$ for SAT, $J$ for job, $L$ for letter and $H$ for happy. Then
+\begin{equation}
+\nonumber
+Pr(C, D, G, H, I, J, L, S)=Pr(C)Pr(I)Pr(D|C)Pr(G|D, I)Pr(S|I)Pr(L|G)Pr(J|L, S)Pr((H|G, J)
+\end{equation}
+
+Rewrite the joint distribution using factors
+\begin{equation}
+\nonumber
+Pr(c, d, g, h, i, j, l, s)=f_{C}(c)f_{I}(i)
+\end{equation}
+
+
+\begin{equation}
+Pr(J=j) = \displaystyle\sum_{d, g, h, i, l, s}Pr(g|d, i)Pr(s|i)Pr(l|g)Pr(j|l, s)Pr(h|g, j)m_{1}(d)
+\end{equation}
+
+where $$m_{1}(d)=\displaystyle\sum_{c}Pr(c)Pr(d|c)$$
+
+\begin{equation}
+Pr(J=j) = \displaystyle\sum_{g, h, i, l, s}Pr(s|i)Pr(l|g)Pr(j|l, s)Pr(h|g, j)m_{2}(g, i)
+\end{equation}
+
+where $$m_{2}(g, i)=\displaystyle\sum_{d}m_{1}(d)Pr(g|d, i)$$
+
+
+Then
+
+\begin{equation}
+Pr(J=j) = \displaystyle\sum_{g, h, l, s}Pr(l|g)Pr(j|l, s)Pr(h|g, j)m_{3}(g, s)
+\end{equation}
+
+where $$m_{3}(g, s)=\displaystyle\sum_{i}m_{2}(g, i)Pr(s|i)$$
+
+Then
+
+\begin{equation}
+Pr(J=j) = \displaystyle\sum_{g, h, l}Pr(l|g)Pr(h|g, j)m_{4}(g, l, j)
+\end{equation}
+where 
+
+$$m_{4}(g, l, j)=\displaystyle\sum_{s}m_{3}(g, s)Pr(j|l, s)$$
+
+Then
+
+\begin{equation}
+Pr(J=j) = \displaystyle\sum_{g, h}Pr(h|g, j)m_{5}(g, j)
+\end{equation}
+where
+
+$$m_{5}(g, j)=\displaystyle\sum_{l}m_{4}(g, l, j)Pr(l|g)$$
+
+We finish by doing
+
+
+\begin{equation}
+Pr(J=j) = \displaystyle\sum_{g}m_{6}(g, j)m_{5}(g, j)
+\end{equation}
+
+$$m_{6}(g, j)=\displaystyle\sum_{s}Pr(h|g, j).$$
+
+\section{Exercise 2}
+\subsection{Question (a)}
+\begin{equation}
+\begin{split}
+Pr[B|J=j, M=m] & \propto\displaystyle\sum_{a, e}Pr(a,B, e, j, m) \\
+&\propto \displaystyle\sum_{a, e}Pr(e)Pr(B)Pr(A=a|B, E=e)Pr(J=j|A=a)Pr(M=m|A=a) \\
+& \propto \displaystyle\sum_{a, e}Pr(e)Pr(B)Pr(A=a|B, E=e)Pr(J=j|A=a)Pr(M=m|A=a)\\
+& \propto Pr(B)\displaystyle\sum_{e}Pr(e)\left(\displaystyle\sum_{a}Pr(A=a|B, E=e)Pr(J=j|A=a)Pr(M=m|A=a)\right) \\
+& \propto Pr(B)\displaystyle\sum_{e}Pr(e)m(e, B, j, m) \\
+ \end{split}
+\end{equation}
+
+where $$m(e, B, j, m) =  \displaystyle\sum_{a}Pr(A=a|B, E=e)Pr(J=j|A=a)Pr(M=m|A=a) $$
+
+Therefore,
+
+\begin{equation}\begin{split}
+m(1, 1, 1, 1) &= Pr(A=1|B=1, E=1)Pr(J=1|A=1)Pr(M=1|A=1) \\ & + Pr(A=0|B=1, E=1)Pr(J=1|A=0)Pr(M=1|A=0) \\
+& = (0.95)(0.90)(0.70) + (0.05)(0.05)(0.01)\\
+& = 0.598525
+\end{split}
+\end{equation}
+
+and 
+\begin{equation}\begin{split}
+m(1, 0, 1, 1) &= Pr(A=1|B=0, E=1)Pr(J=1|A=1)Pr(M=1|A=1) \\ & + Pr(A=0|B=0, E=1)Pr(J=1|A=0)Pr(M=1|A=0) \\
+& = (0.29)(0.90)(0.70) + (0.71)(0.05)(0.01)\\
+& = 0.183055
+\end{split}
+\end{equation}
+
+and 
+
+\begin{equation}\begin{split}
+m(0, 1, 1, 1) &= Pr(A=1|B=1, E=0)Pr(J=1|A=1)Pr(M=1|A=1) \\
+& + Pr(A=0|B=1, E=0)Pr(J=1|A=0)Pr(M=1|A=0) \\
+& = (0.94)(0.90)(0.70) + (0.06)(0.05)(0.01)\\
+& = 0.59223
+\end{split}
+\end{equation}
+
+and 
+
+\begin{equation}\begin{split}
+m(0, 0, 1, 1) &= Pr(A=1|B=0, E=0)Pr(J=1|A=1)Pr(M=1|A=1) \\
+& + Pr(A=0|B=0, E=0)Pr(J=1|A=0)Pr(M=1|A=0) \\
+& = (0.001)(0.90)(0.70) + (0.999)(0.05)(0.01)\\
+& = 0.0011295
+\end{split}
+\end{equation}
+
+Therefore
+
+\begin{equation}
+\begin{split}
+Pr[B=1|J=1, M=1] & \propto Pr(B=1)\left(Pr(E=1)m(1,1,1,1)  + Pr(E=0)m(0,1,1,1)\right) \\
+&= (0.01) \left((0.02)(0.598525) + (0.98)(0.59223) \right)\\
+& = 0.005923559
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+Pr[B=0|J=1, M=1] & \propto Pr(B=0)\left(Pr(E=1)m(1,0,1,1)  + Pr(E=0)m(0,0,1,1)\right) \\
+&= (0.01) \left((0.02)(0.183055) + (0.98)(0.0011295) \right)\\
+& = 0.0000476801
+\end{split}
+\end{equation}
+
+After renormalization,
+$$Pr[B=1|J=1, M=1]= \frac{0.005923559}{0.005923559+ 0.0000476801}\sim 0.992$$
+and 
+$$Pr[B=0|J=1, M=1] \sim 0.008.$$
+
+\subsection{Question b}
+With the elimination method, to compute each $m$, we need 4 multiplications and 1 addition so a total of $16$ multiplications and $4$ additions. To compute $P(B=b|J=1, M=1)$, we need 3 multiplications and 1 addition. Therefore, in total, we need $22$ multiplications and $6$ additions to get $P(B|J=1, M=1)$. 
+
+With the enumeration method, to compute $P(B=b|J=1, M=1)$, since there are two hidden binary variables $A$ and $E$ and since we need to compute $4$ multiplications for each $(a,e)$, in total we need $16$ multiplications and $4$ additions. Therefore to get  $P(B|J=1, M=1)$, we need $32$ multiplications and $8$ additions. 
+
+\subsection{Question c}
+We have 
+\begin{equation}
+Pr(X_{1}, ..., X_{n}) = P(X_{1})\prod_{i=2}^{n}Pr(X_{i}|X_{i-1})
+\end{equation}
+
+Therefore, 
+
+\begin{equation}
+\begin{split}
+Pr(X_{n}|X_{1}=1) &= Pr(X_{1}=1)\displaystyle\sum_{x_{2}, ..., x_{n}}\prod_{i=2}^{n}Pr(x_{i}|x_{i-1}) \\
+& =Pr(X_{1}=1)\displaystyle\sum_{x_{4}, ..., x_{n}}\prod_{i=2}^{n}Pr(x_{i}|x_{i-1})\underbrace{\left(\displaystyle\sum_{x_{2}}Pr(x_{3}|x_{2})Pr(x_{2}|X_{1}=1) \right)}_{=m_{2}(x_{3})}\\
+& =Pr(X_{1}=1)\displaystyle\sum_{x_{4}, ..., x_{n}}\prod_{i=2}^{n}Pr(x_{i}|x_{i-1})m_{2}(x_{3})\\
+& =Pr(X_{1}=1)\displaystyle\sum_{x_{5}, ..., x_{n}}\prod_{i=2}^{n}Pr(x_{i}|x_{i-1})m_{3}(x_{4})\\
+& ... \\
+& =Pr(X_{1}=1)m_{n}(x_{n})
+\end{split} 
+\end{equation}
+
+with 
+
+$$m_{k-1}(x_{k})= \displaystyle\sum_{x_{k-1}} Pr(x_{k}|x_{k-1}m_{k-2}(x_{k-1})$$
+
+Each $m_{k}(x)$, given the previous one, takes $2$ multiplications and $1$ addition so a total of $4$ multiplications and $2$ additions to compute $m_{k}$. Therefore, if we compute $m_{k}$ recursively from $m_{2}$ to $m_{n}$, we need  $4(n-1)$ multiplications and $2(n-1)$ additions, so $O(n)$ operations.
+
+\bigskip
+Using a brute force enumeration would have cost $n-1$ multiplications for each $\prod_{i=2}^{n}Pr(x_{i}|x_{i-1}) $, so a total of $O(2^{n})$ additions and $O(2^{n}(n-1))$ multiplications. 
+
+\section{Exercise 3}
+\subsection{Question (a)}
+The cdf is determined by $CDF(j)=P(X\leq x_{j})$ for $j=1,..., k$. We can obtain the whole cdf with the following recursion
+\begin{equation}
+CDF(j) =\begin{cases}
+ p_{j} + CDF(j-1) \\
+ 0 & \mbox{if } j=0
+\end{cases}
+\end{equation}
+By memoization, we can obtain $CDF(1)$, ... $CDF(k)$ in $O(k)$ times. Note that the resulting array $CDF$ is sorted. 
+
+
+To obtain one random sample from the CDF, draw $u\sim U(0,1)$, find $j$ such that $CDF_{j} \leq u < CDF(j+1)$ (assuming $CDF(0)=0$) and return $x_{j}$. Since $CDF$ is sorted, finding $j$ will take $O(log(k))$ time.
+
+\subsection{Question (b)}
+Compute for $j=1,..., k$, $N_{j}=p_{j}N$, which takes a total of $O(k)$ operations. Then, write a sample with $N_{j}$ copies of $x_{j}$ for $j=1,..., k$. Writing the sample takes $N_{1} + ... + N_{k}=N$ operations. Therefore the total running time is $O(N+k)$ and the per-sample time is $O\left(\frac{N+k}{N}\right)\approx O(1)$ since $k<<N$. 
+
+\section{Exercise 4}
+
+
+First, 
+
+\begin{equation}
+P(H, S, R) = P(S)P(R)P(H|S, R)
+\end{equation}
+
+Therefore we can compute the joint distribution as in table \ref{tab:1}
+\begin{table}[h!]
+\begin{tabular}{l|l|l|l}
+H & R & S & P(H, R, S) \\
+\hline \hline
+1 & 1 & 1 & 0.007      \\
+\hline
+1 & 1 & 0 & 0.0027     \\
+\hline
+1 & 0 & 1 & 0.4851     \\
+\hline
+1 & 0 & 0 & 0.0297     \\
+\hline
+0	&1	&1	&0 \\
+\hline
+0&	1	&0&	0.0003 \\
+\hline
+0	&0 &	1	& 0.2079\\
+\hline
+0	&0	& 0	 &0.2673 \\
+\hline
+
+\end{tabular}
+\caption{Joint Distribution (question 4)}
+\label{tab:1}
+\end{table}
+
+Using the table \ref{tab:1}, we can compute 
+
+\begin{equation}
+\begin{split}
+Pr(H=1, S=0)&=P(H=1, S=0, R=1)P(R=1) + P(H=1, S=0, R=0)P(R=0)\\
+& =0.0294
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+Pr(R=1|H=1, S=0)&=\frac{P(H=1, S=0, R=1)}{P(H=1, S=0)}\\
+& \sim 0.0917
+\end{split}
+\end{equation}
+ 
+ 
+ \begin{equation}
+\begin{split}
+Pr(R=1, H=1)&=P(H=1, S=1, R=1)P(S=1) + P(H=1, S=0, R=1)P(S=0)\\
+& = 0.00571
+\end{split}
+\end{equation}
+
+and 
+
+\begin{equation}
+\begin{split}
+Pr(R=1|H=1)&=\frac{P(H=1, R=1)}{P(H=1)}\\
+& =\frac{0.00571}{0.5245}\sim 0.01089
+\end{split}
+\end{equation}
+
+\end{document}

@@ -1,0 +1,190 @@
+\documentclass{article}
+
+\usepackage{mathtools}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
+
+\usepackage{subcaption}
+\usepackage{gensymb}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,epsfig,epstopdf,titling,url,array}
+\usepackage{enumerate}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\newcommand{\mathbbm}[1]{\text{\usefont{U}{bbm}{m}{n}#1}}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem*{thmt*}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{assumption}{Assumption}
+\newtheorem{prop}[thm]{Proposition}
+\pgfplotsset{compat=1.15}
+
+\newtheorem{defn}{Definition}[section]
+\title{Homework 1 -- Xavier Gitiaux}
+\author{}
+\date{February 2019}
+
+\begin{document}
+\maketitle
+
+\section{Exercise 1}
+\paragraph{Joint Distribution}
+Since $B$ and $C$ are independent given $A$, $P(B, C|A)= P(B|A)P(C|A)$ so by Baye's rule,
+\begin{equation}
+\nonumber
+Pr(A, B, C)= P(A)P(B, C|A) = P(A)P(B|A)P(C|A).
+\end{equation}
+Therefore 
+
+$$P(A=a, B=b, C=c) = (0.2)(0.9)(0.7)= 0.126$$
+$$P(A=a, B=\neg b, C=c) = (0.2)(0.1)(0.7)= 0.014
+$$
+$$P(A=a, B=\neg b, C=\neg c) = (0.2)(0.1)(0.3)=0.006$$
+$$P(A=a, B= b, C=\neg c) = (0.2)(0.9)(0.3)=0.054$$
+$$P(A=\neg a, B=b, C=c) = (0.8)(0.4)(0.5)=0.16$$
+$$P(A=\neg a, B=\neg b, C=c) = (0.8)(0.6)(0.5)=0.24
+$$
+$$P(A=\neg a, B=\neg b, C=\neg c) = (0.8)(0.6)(0.5)=0.24$$
+$$P(A=\neg a, B= b, C=\neg c) = (0.8)(0.4)(0.5)=0.16$$
+
+Then $P(B, C)=P(B,C, A=a)P(A=a) + P(B, C, A=\neg a)P(A=\neg a)= P(B,C, A=a)(0.2) + P(B,C, A=\neg a)(0.8)$. 
+So 
+$$P(B=b, C=c)= 0.1532$$
+$$P(B=b, C=\neg c)= (0.054)(0.2) + (0.16)(0.8) = 0.1388$$
+$$P(B=\neg b, C=\neg c)= (0.006)(0.2) + (0.24)(0.8) = 0.1932$$
+$$P(B=\neg b, C=c)= (0.014)(0.2) + (0.24)(0.8) = 0.1948
+$$
+
+\bigskip
+Using Bayes' rule, 
+\begin{equation}
+\nonumber
+P(A|B=b)=\frac{P(A,B=b)}{P(B=b)}=\frac{P(B=b|A)}{P(B=b)}P(A)
+\end{equation}
+Moreover, $P(B=b)= P(A=a)P(B=b|A=a) + P(A=\neg a)P(B|A=\neg a)=(0.2)(0.9) + (0.8)(0.4) = 0.5$
+So $$P(A=a|B=b)=\frac{0.9}{0.5}(0.2)=0.36.$$
+And $$P(A=\neg a|B=b)=0.64.$$
+
+\bigskip
+Similarly, 
+\begin{equation}
+\nonumber
+P(A|C=c)=\frac{P(A,C=c)}{P(C=c)}=\frac{P(C=c|A)}{P(C=c)}P(A)=
+\end{equation}
+Moreover, $P(C=c)= P(A=a)P(C=c|A=a) + P(A=\neg a)P(C=c|A=\neg a)=(0.2)(0.7) + (0.5)(0.4) = 0.34$
+So $$P(A=a|B=b)=\frac{0.7}{0.34}(0.2)=7/17$$ and 
+$$P(A=\neg a|B=b)=10/17$$
+
+\bigskip
+Lastly, 
+\begin{equation}
+\nonumber
+P(A=a|B=b, C=c)=\frac{P(A=a,C=c, B=b)}{P(B=b, C=c)}=0.126/0.1532
+\end{equation}
+
+\bigskip
+We have 
+\begin{equation}
+P(A|B=b, C=c) = \frac{P(B=b, C=c |A)}{P(B=b, C=c)}P(A)=\frac{P(B=b|A)P(C=c|A)}{P(B=b, C=c)}P(A),
+\end{equation}
+the  last equation holding because $B$ and $C$ are independent given $A$. 
+
+\section{Exercise 2}
+
+First, 
+
+\begin{equation}
+P(x,y|e)= \frac{P(x,y,e)}{P(e)}= \frac{P(x|y, e)P(y, e)}{P(e)}= P(x|y, e)P(y|e).
+\end{equation}
+
+Secondly, 
+\begin{equation}
+P(y|x, e)= \frac{P(x,y,e)}{P(x, e)}= \frac{P(x|y, e)P(y, e)}{P(x,e)}= P(x|y, e)\frac{P(y|e)}{P(x, e)}.
+\end{equation}
+
+Lastly,
+\begin{equation}
+\frac{P(a,b,c}{P(b,c)}=P(a|b,c)=P(b|a, c)= \frac{P(a,b,c}{P(a,c)}.
+\end{equation}
+Therefore, if $P(a|b,c)=P(b|a, c)$, then $P(b,c)=P(a,c)$, which implies that
+\begin{equation}
+P(b|c)=\frac{P(b,c)}{P(c)}=\frac{P(a,c)}{P(c)}= P(a|c).
+\end{equation}
+
+\section{Exercise 3}
+\subsection{Question (a)}
+$P(toothache)=0.108 + 0.012 + 0.016 + 0.064=0.2$
+
+\subsection{Question (b)}
+$P(cavity)=0.108 + 0.012 + 0.072 + 0.008=0.2$
+
+\subsection{Question (c)}
+$P(toothache | cavity)=\frac{0.108 + 0.012}{0.2}=0.6$
+
+\subsection{Question (d)}
+$$P(cavity|toothache \lor catch)=\frac{P((cavity \land toothache) \lor ((cavity \land catch))}{P(toothache \lor catch)}$$
+
+Moreover, $P(toothache \lor catch) = P(toothache) + P(catch) - P(toothache \land catch)= 0.2 + (0.108 + 0.016 + 0.072 + 0.144) - 0.108= 0.432$. And 
+
+$$P(cavity \land (toothache \lor catch))= 0.108 + 0.012 + 0.072 = 0.192$$.
+
+Therefore, 
+$$P(cavity|toothache \lor catch)= \frac{0.192}{0.432}=\frac{4}{9}.$$
+
+
+\section{Exercise 4}
+\subsection{Question (a)}
+$P(movie)=0.5=P(song)$. 
+
+\subsection{Question (b)}
+$$P(Perfect|movie)= \frac{2}{8}=\frac{1}{4}$$
+$$P(Perfect|song)= \frac{1}{8}$$
+$$P(Storm|movie)= \frac{0}{8}=0$$
+$$P(Storm|song)= \frac{1}{8}$$
+
+\subsection{Question (c)}
+With Laplace smoothing,
+\begin{equation}
+P(Perfect \;  Storm| movie)= \frac{1}{8 + 12}= \frac{1}{20}
+\end{equation}
+\begin{equation}
+P(Perfect \;  Storm| song)= \frac{1}{8 + 12}= \frac{1}{20}
+\end{equation}
+Therefore, $P(Perfect \; Storm) = \frac{1}{20}$ and 
+
+$$P(movie|Perfect \; Storm) = \frac{P(Perfect \;  Storm| movie)}{P(Perfect \; Storm)}P(movie)= 0.5$$
+
+It makes sense: since ``Perfect Storm" does not occur in movie nor in song, we assign a probability $0.5$ to the events $(movie|Perfect \; Storm)$ and $(song|Perfect \; Storm)$
+
+\subsection{Question (d)}
+Without Laplacian smoothing, since $P(Perfect \; Storm)=0$, $P(movie|Perfect \; Storm)$ is indefinite. 
+
+
+
+\end{document}
